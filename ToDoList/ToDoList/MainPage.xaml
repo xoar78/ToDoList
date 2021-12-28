@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoList.MainPage"
+             xmlns:model="clr-namespace:ToDoList.Model;assembly=ToDoList"
+             xmlns:viewModel="clr-namespace:ToDoList.ViewModel;assembly=ToDoList"
+             x:DataType="viewModel:TViewModel">
+
+    <StackLayout Padding="10" BackgroundColor="#3e464f">
+        <FlexLayout JustifyContent="SpaceBetween" BackgroundColor="#30363d" Margin="0, 15, 0, 0">
+            <Frame Padding="5"
+                   CornerRadius="5"
+                   BackgroundColor="Transparent"
+                   FlexLayout.Basis="70%">
+                <Entry Placeholder="Enter your task"
+                       PlaceholderColor="#adadad"
+                       TextColor="White"
+                       FontSize="22"
+                       x:Name="Text"/>
+            </Frame>
+            <Button Grid.Column="1" Text="+" BackgroundColor="#ffea00" FontSize="30" CornerRadius="8"
+                    Command="{Binding AddCommand}"
+                    CommandParameter="{Binding Source={x:Reference Name=Text}, Path=Text}"
+                    Padding="0"
+                    FlexLayout.Basis="15%"/>
+        </FlexLayout>
+
+        <ListView ItemsSource="{Binding TaskCollection}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="model:TModel">
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Frame Margin="2" Padding="2" BackgroundColor="Transparent">
+                                <Grid ColumnDefinitions="1*, 8*, 1*" BackgroundColor="#30363d">
+                                    <CheckBox Color="#ffea00"
+                                              IsChecked="{Binding Done, Mode=TwoWay}"/>
+                                    <Label Grid.Column="1" Text="{Binding Text}" TextColor="White" FontFamily="Arial" FontSize="22"/>
+                                    
+                                    <Button Grid.Column="2" Text="✕" BackgroundColor="Red" TextColor="White" FontSize="14" CornerRadius="5"
+                                            Padding="0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:TViewModel}}, Path=DeleteCommand}" CommandParameter="{Binding .}"/>
+                                    <Grid.Triggers>
+                                        <DataTrigger Binding="{Binding Done, Mode=OneWay}" Value="True"
+                                                         TargetType="{x:Type Grid}">
+                                            <Setter Property="Frame.BackgroundColor" Value="#47a31f" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Done, Mode=OneWay}" Value="False"
+                                                         TargetType="{x:Type Grid}">
+                                            <Setter Property="Frame.BackgroundColor" Value="#30363d" />
+                                        </DataTrigger>
+                                    </Grid.Triggers>
+                                </Grid>
+                            </Frame>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+</ContentPage>
